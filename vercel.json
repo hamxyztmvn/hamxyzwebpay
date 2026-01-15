@@ -1,0 +1,12 @@
+{
+  "functions": {
+    "api/media.js": {
+      "runtime": "nodejs18.x",
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    { "source": "/api/media", "destination": "/api/media.js" },
+    { "source": "/(.*)", "destination": "/public/index.html" }
+  ]
+}

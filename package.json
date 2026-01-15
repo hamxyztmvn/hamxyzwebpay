@@ -1,9 +1,9 @@
 {
-  "name": "hamxyz-payment",
+  "name": "hamxyzwebpay",
   "version": "1.0.0",
   "description": "HAMXYZ4NOTE Payment Website",
   "scripts": {
-    "dev": "vercel dev"
+    "dev": "npx serve ."
   },
   "dependencies": {},
   "engines": {

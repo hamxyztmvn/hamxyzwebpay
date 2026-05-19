@@ -7,6 +7,70 @@
     --gloss-border: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.05));
 }
 
+/* Tema Default - Biru */
+:root {
+    --theme-primary: #00e5ff;
+    --theme-primary-glow: rgba(0, 229, 255, 0.3);
+    --theme-primary-dim: rgba(0, 229, 255, 0.6);
+    --theme-primary-dark: #0052d4;
+}
+
+/* Tema Merah */
+:root.theme-red {
+    --theme-primary: #ff4444;
+    --theme-primary-glow: rgba(255, 68, 68, 0.3);
+    --theme-primary-dim: rgba(255, 68, 68, 0.6);
+    --theme-primary-dark: #cc0000;
+}
+
+/* Tema Kuning */
+:root.theme-yellow {
+    --theme-primary: #ffd700;
+    --theme-primary-glow: rgba(255, 215, 0, 0.3);
+    --theme-primary-dim: rgba(255, 215, 0, 0.6);
+    --theme-primary-dark: #ccaa00;
+}
+
+/* Tema Biru */
+:root.theme-blue {
+    --theme-primary: #00e5ff;
+    --theme-primary-glow: rgba(0, 229, 255, 0.3);
+    --theme-primary-dim: rgba(0, 229, 255, 0.6);
+    --theme-primary-dark: #0052d4;
+}
+
+/* Tema Abu-abu */
+:root.theme-gray {
+    --theme-primary: #888888;
+    --theme-primary-glow: rgba(136, 136, 136, 0.3);
+    --theme-primary-dim: rgba(136, 136, 136, 0.6);
+    --theme-primary-dark: #555555;
+}
+
+/* Tema Hitam */
+:root.theme-black {
+    --theme-primary: #ffffff;
+    --theme-primary-glow: rgba(255, 255, 255, 0.3);
+    --theme-primary-dim: rgba(255, 255, 255, 0.6);
+    --theme-primary-dark: #aaaaaa;
+}
+
+/* Tema Hijau */
+:root.theme-green {
+    --theme-primary: #00ff88;
+    --theme-primary-glow: rgba(0, 255, 136, 0.3);
+    --theme-primary-dim: rgba(0, 255, 136, 0.6);
+    --theme-primary-dark: #00aa55;
+}
+
+/* Tema Ungu */
+:root.theme-purple {
+    --theme-primary: #aa66ff;
+    --theme-primary-glow: rgba(170, 102, 255, 0.3);
+    --theme-primary-dim: rgba(170, 102, 255, 0.6);
+    --theme-primary-dark: #7733cc;
+}
+
 * {
     margin: 0; padding: 0; box-sizing: border-box;
     font-family: 'Plus Jakarta Sans', sans-serif;
@@ -94,7 +158,174 @@ body::after {
 
 .nav-label { color: #888; text-transform: uppercase; }
 .nav-divider { color: #444; }
-.nav-brand { color: var(--electric-blue); text-transform: uppercase; }
+.nav-brand { color: var(--theme-primary); text-transform: uppercase; }
+
+/* --- TOMBOL PENGATURAN TEMA --- */
+.theme-settings-btn {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.theme-settings-btn i {
+    font-size: 1.2rem;
+    color: var(--theme-primary);
+}
+
+.theme-settings-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(30deg);
+}
+
+/* --- BOTTOM SHEET UNTUK PEMILIHAN TEMA --- */
+.theme-sheet {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.theme-sheet.active {
+    visibility: visible;
+}
+
+.theme-sheet-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.theme-sheet.active .theme-sheet-overlay {
+    opacity: 1;
+}
+
+.theme-sheet-content {
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(15px);
+    border-radius: 28px 28px 0 0;
+    padding: 25px 20px 35px;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.theme-sheet.active .theme-sheet-content {
+    transform: translateY(0);
+}
+
+.theme-sheet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.theme-sheet-header h3 {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.theme-sheet-close {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 28px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.theme-sheet-close:hover {
+    color: var(--theme-primary);
+}
+
+.theme-options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.theme-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.theme-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.theme-option.selected {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-primary);
+}
+
+.theme-color-preview {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.theme-option span {
+    font-size: 0.7rem;
+    color: #aaa;
+}
+
+.red-bg { background: #ff4444; }
+.yellow-bg { background: #ffd700; }
+.blue-bg { background: #00e5ff; }
+.gray-bg { background: #888888; }
+.black-bg { background: #ffffff; }
+.green-bg { background: #00ff88; }
+.purple-bg { background: #aa66ff; }
+
+.theme-confirm-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 30px;
+    background: linear-gradient(90deg, var(--theme-primary-dark), var(--theme-primary));
+    border: none;
+    color: white;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.theme-confirm-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 5px 20px var(--theme-primary-glow);
+}
 
 /* --- LOADING SCREEN HANYA UNTUK AWAL --- */
 #initialLoader {
@@ -114,7 +345,7 @@ body::after {
 .spin-outer {
     width: 50px; height: 50px;
     border: 2px solid transparent;
-    border-top: 2px solid var(--electric-blue);
+    border-top: 2px solid var(--theme-primary);
     border-radius: 50%;
     animation: spin 0.6s linear infinite;
     position: relative;
@@ -124,7 +355,7 @@ body::after {
     position: absolute;
     top: 10px; left: 10px; right: 10px; bottom: 10px;
     border: 2px solid transparent;
-    border-bottom: 2px solid var(--electric-blue);
+    border-bottom: 2px solid var(--theme-primary);
     border-radius: 50%;
     animation: spin 0.9s linear infinite reverse;
 }
@@ -133,7 +364,7 @@ body::after {
     margin-top: 25px;
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.7rem;
-    color: var(--electric-blue);
+    color: var(--theme-primary);
     letter-spacing: 2px;
     opacity: 0.7;
     animation: textFade 2s infinite;
@@ -155,10 +386,10 @@ body::after {
 }
 
 .skip-btn:hover {
-    background: var(--electric-blue);
+    background: var(--theme-primary);
     color: #000;
     transform: scale(1.05);
-    border-color: var(--electric-blue);
+    border-color: var(--theme-primary);
 }
 
 @keyframes spin { 
@@ -218,11 +449,11 @@ body::after {
     width: 85px;
     height: 85px;
     border-radius: 50%;
-    border: 3px solid var(--electric-blue);
+    border: 3px solid var(--theme-primary);
     padding: 3px;
     position: relative;
     background: rgba(0, 229, 255, 0.1);
-    box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+    box-shadow: 0 0 20px var(--theme-primary-glow);
 }
 
 .profile-pic img {
@@ -290,8 +521,8 @@ body::after {
 }
 
 .telegram-link:hover { 
-    color: var(--electric-blue); 
-    border-color: var(--electric-blue);
+    color: var(--theme-primary); 
+    border-color: var(--theme-primary);
     background: rgba(0, 229, 255, 0.1);
 }
 
@@ -309,7 +540,7 @@ body::after {
     align-items: center;
     justify-content: center;
     animation: fadeInUp 0.6s ease 0.4s both;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 229, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--theme-primary-glow);
 }
 
 video { 
@@ -345,7 +576,7 @@ video {
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-weight: 300;
     font-size: 0.75rem;
-    color: rgba(0, 229, 255, 0.6);
+    color: var(--theme-primary-dim);
     text-transform: uppercase;
     letter-spacing: 1.5px;
 }
@@ -382,13 +613,13 @@ video {
 
 .btn:hover {
     transform: translateY(-3px);
-    border-color: var(--electric-blue);
-    box-shadow: 0 10px 25px rgba(0, 229, 255, 0.2);
+    border-color: var(--theme-primary);
+    box-shadow: 0 10px 25px var(--theme-primary-glow);
     background: rgba(0, 229, 255, 0.05);
 }
 
 .btn-blue { 
-    background: linear-gradient(90deg, rgba(0, 82, 212, 0.8), rgba(0, 210, 255, 0.8));
+    background: linear-gradient(90deg, var(--theme-primary-dark), var(--theme-primary));
     border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
@@ -450,11 +681,11 @@ video {
 }
 
 .sosmed-icon:hover {
-    background: var(--electric-blue);
+    background: var(--theme-primary);
     color: #000;
     transform: scale(1.08);
-    border-color: var(--electric-blue);
-    box-shadow: 0 5px 15px rgba(0, 229, 255, 0.3);
+    border-color: var(--theme-primary);
+    box-shadow: 0 5px 15px var(--theme-primary-glow);
 }
 
 /* --- PAYMENT CARDS --- */
@@ -472,7 +703,7 @@ video {
 
 /* Teks di dana payment dibuat terang dan jelas */
 .pay-card i {
-    color: var(--electric-blue);
+    color: var(--theme-primary);
 }
 
 .pay-card h3 {
@@ -489,7 +720,7 @@ video {
     margin: 10px 0;
     display: block;
     letter-spacing: 2px;
-    text-shadow: 0 0 5px rgba(0, 229, 255, 0.3);
+    text-shadow: 0 0 5px var(--theme-primary-glow);
 }
 
 .pay-card p {
@@ -525,7 +756,7 @@ video {
 .qris-hint {
     text-align: center;
     font-size: 0.7rem;
-    color: rgba(0, 229, 255, 0.7);
+    color: var(--theme-primary-dim);
     margin-bottom: 20px;
     letter-spacing: 1px;
     font-weight: 500;
@@ -534,7 +765,7 @@ video {
 }
 
 .qris-hint:hover {
-    color: var(--electric-blue);
+    color: var(--theme-primary);
 }
 
 .qris-hint i {
@@ -566,7 +797,7 @@ video {
     max-height: 90%;
     object-fit: contain;
     border-radius: 20px;
-    box-shadow: 0 0 50px rgba(0, 229, 255, 0.3);
+    box-shadow: 0 0 50px var(--theme-primary-glow);
     animation: zoomIn 0.3s ease;
 }
 
@@ -593,7 +824,7 @@ video {
 }
 
 .close-modal:hover {
-    color: var(--electric-blue);
+    color: var(--theme-primary);
     transform: scale(1.1);
 }
 

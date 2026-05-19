@@ -13,28 +13,26 @@ function startVideoWithSound() {
     const video = document.getElementById('mainVideo');
     if (!video) return;
     
-    // Video tidak dimute sama sekali
     video.muted = false;
-    video.volume = 1.0; // Volume maksimal
+    video.volume = 1.0;
     
-    // Coba play langsung
     const playPromise = video.play();
     
     if (playPromise !== undefined) {
         playPromise.then(() => {
             console.log("Video playing with full sound");
         }).catch(error => {
-            console.log("Autoplay dengan suara diblokir, coba lagi dengan sedikit delay");
+            console.log("Autoplay dengan suara diblokir");
             setTimeout(() => {
                 video.play().catch(e => {
-                    console.log("Masih diblokir, mungkin user perlu klik");
+                    console.log("Masih diblokir");
                 });
             }, 300);
         });
     }
 }
 
-// Auto hide loading awal setelah 1.5 detik (jika user tidak skip)
+// Auto hide loading awal setelah 1.5 detik
 setTimeout(() => {
     const loader = document.getElementById('initialLoader');
     if (loader.style.display !== 'none') {
@@ -42,34 +40,29 @@ setTimeout(() => {
     }
 }, 1500);
 
-// Fungsi untuk navigasi halaman - loading cepat tanpa skip
+// Fungsi untuk navigasi halaman
 function navTo(pageId) {
     const pageLoader = document.getElementById('pageLoader');
     
-    // Tampilkan loading untuk perpindahan halaman
     pageLoader.style.display = 'flex';
     pageLoader.style.opacity = '1';
 
-    // Sembunyikan halaman saat ini
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 
     setTimeout(() => {
-        // Tampilkan halaman baru
         document.getElementById(pageId).classList.add('active');
         
-        // Sembunyikan loading dengan cepat
         pageLoader.style.opacity = '0';
         setTimeout(() => {
             pageLoader.style.display = 'none';
         }, 200);
         
-        // Jika kembali ke home, play video lagi
         if (pageId === 'home') {
             setTimeout(() => {
                 startVideoWithSound();
             }, 100);
         }
-    }, 150); // Sangat cepat, hanya 150ms
+    }, 150);
 }
 
 function copyNum() {
@@ -84,32 +77,49 @@ function downloadQR() {
     link.click();
 }
 
-// Optimasi video untuk menghindari lag
+// Fungsi untuk preview QRIS fullscreen
+function openQrisPreview() {
+    const modal = document.getElementById('qrisModal');
+    const modalImg = document.getElementById('modalQrisImg');
+    const qrisImg = document.getElementById('qrisImg');
+    
+    modalImg.src = qrisImg.src;
+    modal.classList.add('active');
+}
+
+function closeQrisModal() {
+    const modal = document.getElementById('qrisModal');
+    modal.classList.remove('active');
+}
+
+// Tutup modal dengan tombol ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeQrisModal();
+    }
+});
+
+// Optimasi video
 document.addEventListener('DOMContentLoaded', function() {
     const video = document.getElementById('mainVideo');
     if (video) {
-        // Preload video
         video.preload = 'auto';
-        
-        // Optimasi performa video
         video.playsInline = true;
         video.setAttribute('webkit-playsinline', '');
         video.setAttribute('playsinline', '');
         
-        // Event listener untuk error video
         video.addEventListener('error', function(e) {
             console.error("Video error:", e);
         });
     }
 });
 
-// Tambahkan event listener untuk klik di manapun untuk trigger video sound
+// Event listener untuk klik di manapun untuk trigger video sound
 document.addEventListener('click', function() {
-    // Jika video ada tapi belum play, coba play
     const video = document.getElementById('mainVideo');
     if (video && video.paused) {
         video.play().catch(e => {
-            console.log("Butuh interaksi lebih lanjut untuk play video");
+            console.log("Butuh interaksi lebih lanjut");
         });
     }
 });

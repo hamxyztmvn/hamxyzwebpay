@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Payment Resmi HamxyzOfficial</title>
+    <title>All Payment HamxyzOfficial</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -16,6 +16,53 @@
         <span class="nav-label">DIGITALS PAYMENT</span>
         <span class="nav-divider">/</span>
         <span class="nav-brand">HAMXYZ4NOTE</span>
+    </div>
+
+    <!-- Tombol pengaturan tema di pojok kanan atas -->
+    <div class="theme-settings-btn" onclick="openThemeSheet()">
+        <i class="fa-solid fa-sliders-h"></i>
+    </div>
+
+    <!-- Bottom Sheet untuk pemilihan tema -->
+    <div id="themeSheet" class="theme-sheet">
+        <div class="theme-sheet-overlay" onclick="closeThemeSheet()"></div>
+        <div class="theme-sheet-content">
+            <div class="theme-sheet-header">
+                <h3>Pilih Tema Warna</h3>
+                <button class="theme-sheet-close" onclick="closeThemeSheet()">&times;</button>
+            </div>
+            <div class="theme-options">
+                <div class="theme-option" data-color="red">
+                    <div class="theme-color-preview red-bg"></div>
+                    <span>Merah</span>
+                </div>
+                <div class="theme-option" data-color="yellow">
+                    <div class="theme-color-preview yellow-bg"></div>
+                    <span>Kuning</span>
+                </div>
+                <div class="theme-option" data-color="blue">
+                    <div class="theme-color-preview blue-bg"></div>
+                    <span>Biru</span>
+                </div>
+                <div class="theme-option" data-color="gray">
+                    <div class="theme-color-preview gray-bg"></div>
+                    <span>Abu-abu</span>
+                </div>
+                <div class="theme-option" data-color="black">
+                    <div class="theme-color-preview black-bg"></div>
+                    <span>Hitam</span>
+                </div>
+                <div class="theme-option" data-color="green">
+                    <div class="theme-color-preview green-bg"></div>
+                    <span>Hijau</span>
+                </div>
+                <div class="theme-option" data-color="purple">
+                    <div class="theme-color-preview purple-bg"></div>
+                    <span>Ungu</span>
+                </div>
+            </div>
+            <button class="theme-confirm-btn" onclick="confirmTheme()">CONFIRM & REFRESH</button>
+        </div>
     </div>
 
     <!-- Modal untuk preview QRIS fullscreen -->
@@ -74,7 +121,7 @@
                     <i class="fa-solid fa-wallet"></i> DANA PAYMENT
                 </button>
                 <button class="btn" onclick="navTo('qrisPage')">
-                    <i class="fa-solid fa-qrcode"></i> QRIS INSTANT
+                    <i class="fa-solid fa-qrcode"></i> QRIS PAYMENT
                 </button>
             </div>
 
@@ -83,11 +130,11 @@
                 <div class="sosmed-title">CONNECT WITH ME</div>
                 <div class="sosmed-grid">
                     <a href="https://instagram.com/ilhmm.foutrstyc__" class="sosmed-icon" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://wa.me/628884233919" class="sosmed-icon" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+                    <a href="https://wa.me/6281335783149" class="sosmed-icon" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
                     <a href="https://t.me/IsRealHamxyz" class="sosmed-icon" target="_blank"><i class="fa-brands fa-telegram"></i></a>
                     <a href="https://tiktok.com/@hamxyzoffc_" class="sosmed-icon" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
                     <a href="https://youtube.com/@HamxyzOfficial" class="sosmed-icon" target="_blank"><i class="fa-brands fa-youtube"></i></a>
-                    <a href="https://whatsapp.com/channel/0029Vb5pIjtDTkKBv1KbsB2U" class="sosmed-icon" target="_blank"><i class="fa-brands fa-whatsapp"></i></a> 
+                    <a href="https://whatsapp.com/channel/0029Vb6ilJs8KMqd8Ctf4O2x" class="sosmed-icon" target="_blank"><i class="fa-brands fa-whatsapp"></i></a> 
                     <a href="#" class="sosmed-icon"><i class="fa-solid fa-bullhorn"></i></a> 
                     <a href="https://github.com/hamxyztmvn/" class="sosmed-icon" target="_blank"><i class="fa-brands fa-github"></i></a>
                 </div>
@@ -109,7 +156,7 @@
             
             <div class="pay-card">
                 <i class="fa-solid fa-fingerprint"></i>
-                <h3>DANA RECEIVER</h3>
+                <h3>DANA PAYMENT</h3>
                 <span class="dana-val">0813 - 3578 - 3149</span>
                 <p>A/N: ILHAM FA****I</p>
             </div>
@@ -137,7 +184,7 @@
             
             <!-- Teks petunjuk klik QRIS -->
             <div class="qris-hint" onclick="openQrisPreview()">
-                <i class="fa-solid fa-magnifying-glass-plus"></i> Klik Gambar QRIS Nya Untuk Memperbesar
+                <i class="fa-solid fa-magnifying-glass-plus"></i> Klik Gambar Qris Nya Untuk Memperbesar
             </div>
             
             <div class="btn-list">

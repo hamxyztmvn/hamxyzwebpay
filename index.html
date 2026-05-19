@@ -2,18 +2,26 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HAMXYZ4NOTE | OFFICIAL HUB</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Payment Resmi HamxyzOfficial</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <div class="glow-overlay"></div>
+
     <div class="top-nav">
         <span class="nav-label">DIGITALS PAYMENT</span>
         <span class="nav-divider">/</span>
         <span class="nav-brand">HAMXYZ4NOTE</span>
+    </div>
+
+    <!-- Modal untuk preview QRIS fullscreen -->
+    <div id="qrisModal" class="qris-modal" onclick="closeQrisModal()">
+        <span class="close-modal">&times;</span>
+        <img id="modalQrisImg" src="assets/qris.png" alt="QRIS Fullscreen">
     </div>
 
     <!-- Loading Screen Hanya untuk Awal (Ada Skip) -->
@@ -45,7 +53,9 @@
             </div>
             
             <h1 class="profile-name">HAMXYZ4NOTE</h1>
-            <a href="https://t.me/IsRealHamxyz" class="mono-link">@IsRealHamxyz</a>
+            <a href="https://t.me/IsRealHamxyz" class="telegram-link" target="_blank">
+                <i class="fa-brands fa-telegram"></i> @IsRealHamxyz
+            </a>
 
             <div class="video-wrapper">
                 <video id="mainVideo" autoplay loop playsinline>
@@ -55,7 +65,7 @@
 
             <!-- Payment Header -->
             <div class="payment-header">
-                <div class="payment-label-left">CHOSE PAYMENT METHODS</div>
+                <div class="payment-label-left">CHOOSE PAYMENT METHODS</div>
                 <div class="payment-label-right">ALL PAYMENT</div>
             </div>
 
@@ -68,15 +78,19 @@
                 </button>
             </div>
 
-            <div class="sosmed-grid">
-                <a href="https://instagram.com/ilhmm.foutrstyc__" class="sosmed-icon" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-                <a href="https://wa.me/628884233919" class="sosmed-icon" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
-                <a href="https://t.me/IsRealHamxyz" class="sosmed-icon" target="_blank"><i class="fa-brands fa-telegram"></i></a>
-                <a href="https://tiktok.com/@hamxyzoffc_" class="sosmed-icon" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
-                <a href="https://youtube.com/@HamxyzOfficial" class="sosmed-icon" target="_blank"><i class="fa-brands fa-youtube"></i></a>
-                <a href="https://whatsapp.com/channel/0029Vb5pIjtDTkKBv1KbsB2U" class="sosmed-icon" target="_blank"><i class="fa-brands fa-whatsapp"></i></a> 
-                <a href="#" class="sosmed-icon"><i class="fa-solid fa-bullhorn"></i></a> 
-                <a href="https://github.com/hamxyztmvn/" class="sosmed-icon" target="_blank"><i class="fa-brands fa-github"></i></a>
+            <!-- Sosmed Section dengan Frame Kotak -->
+            <div class="sosmed-section">
+                <div class="sosmed-title">CONNECT WITH ME</div>
+                <div class="sosmed-grid">
+                    <a href="https://instagram.com/ilhmm.foutrstyc__" class="sosmed-icon" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://wa.me/628884233919" class="sosmed-icon" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+                    <a href="https://t.me/IsRealHamxyz" class="sosmed-icon" target="_blank"><i class="fa-brands fa-telegram"></i></a>
+                    <a href="https://tiktok.com/@hamxyzoffc_" class="sosmed-icon" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="https://youtube.com/@HamxyzOfficial" class="sosmed-icon" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="https://whatsapp.com/channel/0029Vb5pIjtDTkKBv1KbsB2U" class="sosmed-icon" target="_blank"><i class="fa-brands fa-whatsapp"></i></a> 
+                    <a href="#" class="sosmed-icon"><i class="fa-solid fa-bullhorn"></i></a> 
+                    <a href="https://github.com/hamxyztmvn/" class="sosmed-icon" target="_blank"><i class="fa-brands fa-github"></i></a>
+                </div>
             </div>
 
             <!-- Footer Credits -->
@@ -87,7 +101,6 @@
         </div>
 
         <div id="danaPage" class="page">
-            <!-- Tombol back di kiri dalam konten -->
             <div class="back-btn-content">
                 <button class="btn" onclick="navTo('home')">
                     <i class="fas fa-arrow-left"></i> BACK
@@ -95,17 +108,16 @@
             </div>
             
             <div class="pay-card">
-                <i class="fa-solid fa-fingerprint" style="font-size: 2.5rem; color: var(--electric-blue); margin-bottom: 15px;"></i>
-                <h3 style="font-size: 0.9rem; opacity: 0.6; letter-spacing: 2px;">DANA RECEIVER</h3>
+                <i class="fa-solid fa-fingerprint"></i>
+                <h3>DANA RECEIVER</h3>
                 <span class="dana-val">0813 - 3578 - 3149</span>
-                <p style="font-size: 0.8rem; font-weight: 700;">A/N: ILHAM FA****I</p>
+                <p>A/N: ILHAM FA****I</p>
             </div>
             <br>
             <div class="btn-list">
                 <button class="btn btn-blue" onclick="copyNum()">COPY NUMBER</button>
             </div>
 
-            <!-- Footer Credits -->
             <div class="footer-credits">
                 <div class="dev-label">WEB DEVELOPED BY</div>
                 <div class="dev-name">HAMXYZ OFFICIAL</div>
@@ -113,21 +125,25 @@
         </div>
 
         <div id="qrisPage" class="page">
-            <!-- Tombol back di kiri dalam konten -->
             <div class="back-btn-content">
                 <button class="btn" onclick="navTo('home')">
                     <i class="fas fa-arrow-left"></i> BACK
                 </button>
             </div>
             
-            <div class="qris-container">
-                <img id="qrisImg" src="assets/qris.png">
+            <div class="qris-container" onclick="openQrisPreview()">
+                <img id="qrisImg" src="assets/qris.png" alt="QRIS">
             </div>
+            
+            <!-- Teks petunjuk klik QRIS -->
+            <div class="qris-hint" onclick="openQrisPreview()">
+                <i class="fa-solid fa-magnifying-glass-plus"></i> Klik Gambar QRIS Nya Untuk Memperbesar
+            </div>
+            
             <div class="btn-list">
                 <button class="btn btn-blue" onclick="downloadQR()">SAVE QRIS</button>
             </div>
 
-            <!-- Footer Credits -->
             <div class="footer-credits">
                 <div class="dev-label">WEB DEVELOPED BY</div>
                 <div class="dev-name">HAMXYZ OFFICIAL</div>
@@ -138,4 +154,4 @@
 
     <script src="script.js"></script>
 </body>
-                  </html>
+</html>

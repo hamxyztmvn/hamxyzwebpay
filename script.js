@@ -1,3 +1,95 @@
+// Variabel untuk menyimpan tema yang dipilih
+let selectedTheme = localStorage.getItem('selectedTheme') || 'blue';
+
+// Fungsi untuk menerapkan tema ke root
+function applyTheme(themeColor) {
+    const root = document.documentElement;
+    // Hapus semua class tema yang ada
+    const themeClasses = ['theme-red', 'theme-yellow', 'theme-blue', 'theme-gray', 'theme-black', 'theme-green', 'theme-purple'];
+    themeClasses.forEach(cls => root.classList.remove(cls));
+    
+    // Tambahkan class tema yang dipilih
+    root.classList.add(`theme-${themeColor}`);
+    
+    // Simpan ke localStorage
+    localStorage.setItem('selectedTheme', themeColor);
+}
+
+// Fungsi untuk load tema saat halaman dimuat
+function loadTheme() {
+    const savedTheme = localStorage.getItem('selectedTheme');
+    if (savedTheme) {
+        selectedTheme = savedTheme;
+        applyTheme(selectedTheme);
+    }
+}
+
+// Fungsi untuk membuka bottom sheet tema
+function openThemeSheet() {
+    const sheet = document.getElementById('themeSheet');
+    sheet.classList.add('active');
+    
+    // Tandai opsi yang sedang dipilih
+    const options = document.querySelectorAll('.theme-option');
+    options.forEach(opt => {
+        opt.classList.remove('selected');
+        const color = opt.getAttribute('data-color');
+        if (color === selectedTheme) {
+            opt.classList.add('selected');
+        }
+    });
+}
+
+// Fungsi untuk menutup bottom sheet tema
+function closeThemeSheet() {
+    const sheet = document.getElementById('themeSheet');
+    sheet.classList.remove('active');
+}
+
+// Fungsi untuk memilih tema (tanpa refresh dulu)
+function selectTheme(color) {
+    selectedTheme = color;
+    
+    // Update tampilan selected di bottom sheet
+    const options = document.querySelectorAll('.theme-option');
+    options.forEach(opt => {
+        opt.classList.remove('selected');
+        if (opt.getAttribute('data-color') === color) {
+            opt.classList.add('selected');
+        }
+    });
+}
+
+// Fungsi confirm tema - refresh dan terapkan tema baru
+function confirmTheme() {
+    // Simpan tema yang dipilih ke localStorage
+    localStorage.setItem('selectedTheme', selectedTheme);
+    // Refresh halaman untuk menerapkan tema
+    window.location.reload();
+}
+
+// Event listener untuk klik opsi tema
+document.addEventListener('DOMContentLoaded', function() {
+    // Load tema yang tersimpan
+    loadTheme();
+    
+    // Setup event listener untuk opsi tema
+    const options = document.querySelectorAll('.theme-option');
+    options.forEach(opt => {
+        opt.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const color = this.getAttribute('data-color');
+            selectTheme(color);
+        });
+    });
+    
+    // Tutup bottom sheet saat klik overlay
+    const overlay = document.querySelector('.theme-sheet-overlay');
+    if (overlay) {
+        overlay.addEventListener('click', closeThemeSheet);
+    }
+});
+
 // Fungsi untuk skip loading awal
 function skipInitialLoading() {
     const loader = document.getElementById('initialLoader');
@@ -96,6 +188,7 @@ function closeQrisModal() {
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeQrisModal();
+        closeThemeSheet();
     }
 });
 

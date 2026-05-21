@@ -419,6 +419,8 @@ body::after {
     display: none;
     width: 100%;
     text-align: center;
+    min-height: calc(100vh - 120px);
+    position: relative;
 }
 
 .page.active { 
@@ -431,6 +433,50 @@ body::after {
 @keyframes fadeInOut {
     0% { opacity: 0; transform: translateY(10px); }
     100% { opacity: 1; transform: translateY(0); }
+}
+
+/* --- PAGE CENTER CONTENT (untuk membuat konten di tengah vertikal) --- */
+.page-center-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px 0;
+}
+
+/* Tombol back hanya icon panah, tanpa border, tanpa tulisan - WARNA PUTIH */
+.back-btn-icon {
+    position: relative;
+    align-self: flex-start;
+    margin-top: 0;
+    margin-bottom: 0;
+    width: 45px !important;
+    height: 45px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    font-size: 1.5rem !important;
+    color: #ffffff !important;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.back-btn-icon:hover {
+    background: transparent !important;
+    transform: translateX(-3px);
+    border: none !important;
+    box-shadow: none !important;
+    color: var(--theme-primary) !important;
+}
+
+.back-btn-icon i {
+    margin: 0;
+    font-size: 1.5rem;
 }
 
 /* --- PROFILE SECTION --- */
@@ -621,20 +667,6 @@ video {
 .btn-blue { 
     background: linear-gradient(90deg, var(--theme-primary-dark), var(--theme-primary));
     border: 1px solid rgba(255, 255, 255, 0.25);
-}
-
-/* Tombol back di dalam konten */
-.back-btn-content {
-    align-self: flex-start;
-    margin-bottom: 20px;
-    margin-left: 0;
-    animation: fadeIn 0.5s ease;
-}
-
-.back-btn-content .btn {
-    width: auto;
-    padding: 10px 20px;
-    font-size: 0.85rem;
 }
 
 /* --- SOSMED GRID DALAM FRAME KOTAK --- */
@@ -830,7 +862,7 @@ video {
 
 /* --- FOOTER CREDITS --- */
 .footer-credits {
-    margin-top: 40px;
+    margin-top: auto;
     text-align: center;
     width: 100%;
     padding-top: 20px;

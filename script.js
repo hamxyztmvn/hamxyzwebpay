@@ -88,7 +88,25 @@ document.addEventListener('DOMContentLoaded', function() {
     if (overlay) {
         overlay.addEventListener('click', closeThemeSheet);
     }
+    
+    // Animasi teks "please wait..." dengan titik-titik yang berubah
+    startWaitingTextAnimation();
 });
+
+// Fungsi untuk animasi teks "please wait..." dengan titik-titik
+function startWaitingTextAnimation() {
+    const waitingText = document.getElementById('waitingText');
+    if (!waitingText) return;
+    
+    let dotCount = 0;
+    const maxDots = 3;
+    
+    setInterval(() => {
+        dotCount = (dotCount + 1) % (maxDots + 1);
+        let dots = '.'.repeat(dotCount);
+        waitingText.textContent = `Please Wait${dots}`;
+    }, 500);
+}
 
 // Fungsi untuk skip loading awal
 function skipInitialLoading() {
@@ -124,13 +142,13 @@ function startVideoWithSound() {
     }
 }
 
-// Auto hide loading awal setelah 1.5 detik
+// Auto hide loading awal setelah 10 detik (durasi bar loading selesai)
 setTimeout(() => {
     const loader = document.getElementById('initialLoader');
-    if (loader.style.display !== 'none') {
+    if (loader && loader.style.display !== 'none') {
         skipInitialLoading();
     }
-}, 1500);
+}, 10000);
 
 // Fungsi untuk navigasi halaman
 function navTo(pageId) {

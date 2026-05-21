@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>All Payment HamxyzOfficial</title>
+    <title>Payment's Reserved HamxyzOfficial</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -50,7 +50,7 @@
                 </div>
                 <div class="theme-option" data-color="black">
                     <div class="theme-color-preview black-bg"></div>
-                    <span>Hitam</span>
+                    <span>Putih</span>
                 </div>
                 <div class="theme-option" data-color="green">
                     <div class="theme-color-preview green-bg"></div>
@@ -61,7 +61,7 @@
                     <span>Ungu</span>
                 </div>
             </div>
-            <button class="theme-confirm-btn" onclick="confirmTheme()">CONFIRM & REFRESH</button>
+            <button class="theme-confirm-btn" onclick="confirmTheme()">CUSTOM</button>
         </div>
     </div>
 
@@ -130,7 +130,7 @@
                 <div class="sosmed-title">CONNECT WITH ME</div>
                 <div class="sosmed-grid">
                     <a href="https://instagram.com/ilhmm.foutrstyc__" class="sosmed-icon" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://wa.me/6281335783149" class="sosmed-icon" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+                    <a href="https://wa.me/628884233919" class="sosmed-icon" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
                     <a href="https://t.me/IsRealHamxyz" class="sosmed-icon" target="_blank"><i class="fa-brands fa-telegram"></i></a>
                     <a href="https://tiktok.com/@hamxyzoffc_" class="sosmed-icon" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
                     <a href="https://youtube.com/@HamxyzOfficial" class="sosmed-icon" target="_blank"><i class="fa-brands fa-youtube"></i></a>
@@ -148,21 +148,20 @@
         </div>
 
         <div id="danaPage" class="page">
-            <div class="back-btn-content">
-                <button class="btn" onclick="navTo('home')">
-                    <i class="fas fa-arrow-left"></i> BACK
-                </button>
-            </div>
+            <button class="btn back-btn-icon" onclick="navTo('home')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
             
-            <div class="pay-card">
-                <i class="fa-solid fa-fingerprint"></i>
-                <h3>DANA PAYMENT</h3>
-                <span class="dana-val">0813 - 3578 - 3149</span>
-                <p>A/N: ILHAM FA****I</p>
-            </div>
-            <br>
-            <div class="btn-list">
-                <button class="btn btn-blue" onclick="copyNum()">COPY NUMBER</button>
+            <div class="page-center-content">
+                <div class="pay-card">
+                    <i class="fa-solid fa-fingerprint"></i>
+                    <h3>DANA PAYMENT</h3>
+                    <span class="dana-val">0813 - 3578 - 3149</span>
+                    <p>A/N: ILHAM FA****I</p>
+                </div>
+                <div class="btn-list">
+                    <button class="btn btn-blue" onclick="copyNum()">COPY NUMBER</button>
+                </div>
             </div>
 
             <div class="footer-credits">
@@ -172,23 +171,22 @@
         </div>
 
         <div id="qrisPage" class="page">
-            <div class="back-btn-content">
-                <button class="btn" onclick="navTo('home')">
-                    <i class="fas fa-arrow-left"></i> BACK
-                </button>
-            </div>
+            <button class="btn back-btn-icon" onclick="navTo('home')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
             
-            <div class="qris-container" onclick="openQrisPreview()">
-                <img id="qrisImg" src="assets/qris.png" alt="QRIS">
-            </div>
-            
-            <!-- Teks petunjuk klik QRIS -->
-            <div class="qris-hint" onclick="openQrisPreview()">
-                <i class="fa-solid fa-magnifying-glass-plus"></i> Klik Gambar Qris Nya Untuk Memperbesar
-            </div>
-            
-            <div class="btn-list">
-                <button class="btn btn-blue" onclick="downloadQR()">SAVE QRIS</button>
+            <div class="page-center-content">
+                <div class="qris-container" onclick="openQrisPreview()">
+                    <img id="qrisImg" src="assets/qris.png" alt="QRIS">
+                </div>
+                
+                <div class="qris-hint" onclick="openQrisPreview()">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i> Klik Gambar Qris Nya Untuk Memperbesar
+                </div>
+                
+                <div class="btn-list">
+                    <button class="btn btn-blue" onclick="downloadQR()">SAVE QRIS</button>
+                </div>
             </div>
 
             <div class="footer-credits">

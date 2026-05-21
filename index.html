@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Payment's Reserved HamxyzOfficial</title>
+    <title>Payment Reserved HamxyzOfficial</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -28,7 +28,7 @@
         <div class="theme-sheet-overlay" onclick="closeThemeSheet()"></div>
         <div class="theme-sheet-content">
             <div class="theme-sheet-header">
-                <h3>Pilih Tema Warna</h3>
+                <h3>Custom Thema</h3>
                 <button class="theme-sheet-close" onclick="closeThemeSheet()">&times;</button>
             </div>
             <div class="theme-options">
@@ -71,12 +71,20 @@
         <img id="modalQrisImg" src="assets/qris.png" alt="QRIS Fullscreen">
     </div>
 
-    <!-- Loading Screen Hanya untuk Awal (Ada Skip) -->
+    <!-- Loading Screen Awal dengan Foto Profil, Bar Loading, Skip, dan Animasi -->
     <div id="initialLoader">
-        <div class="spin-outer">
-            <div class="spin-inner"></div>
+        <div class="loader-profile-wrapper">
+            <div class="loader-profile-pic pulse-animation">
+                <img src="assets/profile.jpg" alt="Profile">
+                <div class="loader-verified-badge">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+            </div>
         </div>
-        <div class="loading-text">LOADING</div>
+        <div class="loader-bar-container">
+            <div class="loader-bar" id="loaderBar"></div>
+        </div>
+        <div class="loader-waiting-text" id="waitingText">Please Wait...</div>
         <button class="skip-btn" onclick="skipInitialLoading()">SKIP LOADING</button>
     </div>
 
@@ -185,7 +193,7 @@
                 </div>
                 
                 <div class="btn-list">
-                    <button class="btn btn-blue" onclick="downloadQR()">SAVE QRIS</button>
+                    <button class="btn btn-blue" onclick="downloadQR()">DOWNLOAD</button>
                 </div>
             </div>
 

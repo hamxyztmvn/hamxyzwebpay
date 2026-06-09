@@ -2,29 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    
-    <!-- Title untuk tab browser & pratinjau -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Payment Reserved HamxyzOfficial</title>
-    
-    <!-- Meta Description untuk pratinjau -->
-    <meta name="description" content="Official Payment Hub HAMXYZ4NOTE - DANA Payment & QRIS Instant. Follow sosial media HAMXYZ4NOTE untuk update terbaru.">
-    
-    <!-- Open Graph / Facebook / WhatsApp / Telegram -->
-    <meta property="og:title" content="HAMXYZ4NOTE | OFFICIAL PAYMENT HUB">
-    <meta property="og:description" content="Official Payment Hub HAMXYZ4NOTE - DANA Payment & QRIS Instant. Follow sosial media HAMXYZ4NOTE untuk update terbaru.">
-    <meta property="og:image" content="https://hamxyzwebpay.vercel.app/assets/preview.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://hamxyzwebpay.vercel.app">
-    
-    <!-- Twitter Card (untuk Twitter/X) -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="HAMXYZ4NOTE | OFFICIAL PAYMENT HUB">
-    <meta name="twitter:description" content="Official Payment Hub HAMXYZ4NOTE - DANA Payment & QRIS Instant.">
-    <meta name="twitter:image" content="https://hamxyzwebpay.vercel.app/assets/preview.jpg">
-    
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -33,199 +12,193 @@
 
     <div class="glow-overlay"></div>
 
+    <!-- Top navigation (digeser sedikit agar tidak bertabrakan dengan menu) -->
     <div class="top-nav">
         <span class="nav-label">DIGITALS PAYMENT</span>
         <span class="nav-divider">/</span>
         <span class="nav-brand">HAMXYZ4NOTE</span>
     </div>
 
-    <!-- Tombol pengaturan tema di pojok kanan atas -->
-    <div class="theme-settings-btn" onclick="openThemeSheet()">
-        <i class="fa-solid fa-sliders-h"></i>
-    </div>
-
-    <!-- Bottom Sheet untuk pemilihan tema -->
-    <div id="themeSheet" class="theme-sheet">
-        <div class="theme-sheet-overlay" onclick="closeThemeSheet()"></div>
-        <div class="theme-sheet-content">
-            <div class="theme-sheet-header">
-                <h3>Custom Thema</h3>
-                <button class="theme-sheet-close" onclick="closeThemeSheet()">&times;</button>
-            </div>
-            <div class="theme-options">
-                <div class="theme-option" data-color="red">
-                    <div class="theme-color-preview red-bg"></div>
-                    <span>Merah</span>
-                </div>
-                <div class="theme-option" data-color="yellow">
-                    <div class="theme-color-preview yellow-bg"></div>
-                    <span>Kuning</span>
-                </div>
-                <div class="theme-option" data-color="blue">
-                    <div class="theme-color-preview blue-bg"></div>
-                    <span>Biru</span>
-                </div>
-                <div class="theme-option" data-color="gray">
-                    <div class="theme-color-preview gray-bg"></div>
-                    <span>Abu-abu</span>
-                </div>
-                <div class="theme-option" data-color="black">
-                    <div class="theme-color-preview black-bg"></div>
-                    <span>Putih</span>
-                </div>
-                <div class="theme-option" data-color="green">
-                    <div class="theme-color-preview green-bg"></div>
-                    <span>Hijau</span>
-                </div>
-                <div class="theme-option" data-color="purple">
-                    <div class="theme-color-preview purple-bg"></div>
-                    <span>Ungu</span>
-                </div>
-            </div>
-            <button class="theme-confirm-btn" onclick="confirmTheme()">CUSTOM</button>
+    <!-- Tombol navigasi menu (di pojok kanan atas) dengan desain baru -->
+    <div class="nav-menu-btn" id="navMenuBtn">
+        <div class="hamburger-icon">
+            <span></span><span></span><span></span>
         </div>
     </div>
 
-    <!-- Modal untuk preview QRIS fullscreen -->
+    <!-- Panel menu popup (posisi disesuaikan agar turun dari kanan) -->
+    <div id="navMenuPanel" class="nav-menu-panel">
+        <div class="nav-menu-header">
+            <span>MENU</span>
+            <button class="close-menu-btn" id="closeMenuBtn"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="nav-menu-items">
+            <button id="menuThemeBtn" class="menu-item"><i class="fa-solid fa-palette"></i> <span data-i18n="menu_theme">Custom Theme</span></button>
+            <button id="menuLangBtn" class="menu-item"><i class="fa-solid fa-globe"></i> <span data-i18n="menu_language">Language</span></button>
+            <button id="menuGamesBtn" class="menu-item"><i class="fa-solid fa-gamepad"></i> <span data-i18n="menu_games">Games</span></button>
+            <button id="menuToolsBtn" class="menu-item"><i class="fa-solid fa-toolbox"></i> <span data-i18n="menu_tools">Tools</span></button>
+        </div>
+    </div>
+
+    <!-- Popup bahasa custom -->
+    <div id="langPopup" class="lang-popup">
+        <div class="lang-popup-content">
+            <div class="lang-popup-header"><h3 data-i18n="select_language">Pilih Bahasa</h3><button class="close-lang-popup">&times;</button></div>
+            <div class="lang-options">
+                <button data-lang="id" class="lang-option">🇮🇩 Indonesia</button>
+                <button data-lang="ms" class="lang-option">🇲🇾 Malaysia</button>
+                <button data-lang="en" class="lang-option">🇬🇧 English</button>
+                <button data-lang="pt" class="lang-option">🇧🇷 Português</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Sheet tema -->
+    <div id="themeSheet" class="theme-sheet">
+        <div class="theme-sheet-overlay" onclick="closeThemeSheet()"></div>
+        <div class="theme-sheet-content">
+            <div class="theme-sheet-header"><h3 data-i18n="theme_title">Custom Thema</h3><button class="theme-sheet-close" onclick="closeThemeSheet()">&times;</button></div>
+            <div class="theme-options">
+                <div class="theme-option" data-color="red"><div class="theme-color-preview red-bg"></div><span data-i18n="theme_red">Merah</span></div>
+                <div class="theme-option" data-color="yellow"><div class="theme-color-preview yellow-bg"></div><span data-i18n="theme_yellow">Kuning</span></div>
+                <div class="theme-option" data-color="blue"><div class="theme-color-preview blue-bg"></div><span data-i18n="theme_blue">Biru</span></div>
+                <div class="theme-option" data-color="gray"><div class="theme-color-preview gray-bg"></div><span data-i18n="theme_gray">Abu-abu</span></div>
+                <div class="theme-option" data-color="black"><div class="theme-color-preview black-bg"></div><span data-i18n="theme_white">Putih</span></div>
+                <div class="theme-option" data-color="green"><div class="theme-color-preview green-bg"></div><span data-i18n="theme_green">Hijau</span></div>
+                <div class="theme-option" data-color="purple"><div class="theme-color-preview purple-bg"></div><span data-i18n="theme_purple">Ungu</span></div>
+            </div>
+            <button class="theme-confirm-btn" data-i18n="theme_confirm" onclick="confirmTheme()">CUSTOM</button>
+        </div>
+    </div>
+
+    <!-- Modal QRIS -->
     <div id="qrisModal" class="qris-modal" onclick="closeQrisModal()">
         <span class="close-modal">&times;</span>
         <img id="modalQrisImg" src="assets/qris.png" alt="QRIS Fullscreen">
     </div>
 
-    <!-- Loading Screen Awal dengan Foto Profil, Bar Loading, Skip, dan Animasi -->
+    <!-- Loading Screen Awal -->
     <div id="initialLoader">
         <div class="loader-profile-wrapper">
             <div class="loader-profile-pic pulse-animation">
                 <img src="assets/profile.jpg" alt="Profile">
-                <div class="loader-verified-badge">
-                    <i class="fa-solid fa-check"></i>
-                </div>
+                <div class="loader-verified-badge"><i class="fa-solid fa-check"></i></div>
             </div>
         </div>
-        <div class="loader-bar-container">
-            <div class="loader-bar" id="loaderBar"></div>
-        </div>
-        <div class="loader-waiting-text" id="waitingText">Please Wait...</div>
-        <button class="skip-btn" onclick="skipInitialLoading()">SKIP LOADING</button>
+        <div class="loader-bar-container"><div class="loader-bar" id="loaderBar"></div></div>
+        <div class="loader-waiting-text" id="waitingText" data-i18n="loading_please_wait">Please Wait...</div>
+        <button class="skip-btn" data-i18n="loading_skip" onclick="skipInitialLoading()">SKIP LOADING</button>
     </div>
 
-    <!-- Loading Screen untuk Perpindahan Halaman (Tidak Ada Skip) -->
-    <div id="pageLoader">
-        <div class="spin-outer">
-            <div class="spin-inner"></div>
-        </div>
-    </div>
+    <!-- Loading Screen perpindahan halaman -->
+    <div id="pageLoader"><div class="spin-outer"><div class="spin-inner"></div></div></div>
 
     <div class="container">
-        
+        <!-- Halaman Home -->
         <div id="home" class="page active">
             <div class="profile-wrapper">
-                <div class="profile-pic">
-                    <img src="assets/profile.jpg" alt="Profile">
-                    <div class="verified-badge">
-                        <i class="fa-solid fa-check"></i>
-                    </div>
-                </div>
+                <div class="profile-pic"><img src="assets/profile.jpg" alt="Profile"><div class="verified-badge"><i class="fa-solid fa-check"></i></div></div>
             </div>
-            
             <h1 class="profile-name">HAMXYZ4NOTE</h1>
-            <a href="https://t.me/IsRealHamxyz" class="telegram-link" target="_blank">
-                <i class="fa-brands fa-telegram"></i> @IsRealHamxyz
-            </a>
-
-            <div class="video-wrapper">
-                <video id="mainVideo" autoplay loop playsinline>
-                    <source src="assets/video.mp4" type="video/mp4">
-                </video>
-            </div>
-
-            <!-- Payment Header -->
-            <div class="payment-header">
-                <div class="payment-label-left">CHOOSE PAYMENT METHODS</div>
-                <div class="payment-label-right">ALL PAYMENT</div>
-            </div>
-
+            <a href="https://t.me/IsRealHamxyz" class="telegram-link" target="_blank"><i class="fa-brands fa-telegram"></i> @IsRealHamxyz</a>
+            <div class="video-wrapper"><video id="mainVideo" autoplay loop playsinline><source src="assets/video.mp4" type="video/mp4"></video></div>
+            <div class="payment-header"><div class="payment-label-left" data-i18n="home_choose_payment">CHOOSE PAYMENT METHODS</div><div class="payment-label-right" data-i18n="home_all_payment">ALL PAYMENT</div></div>
             <div class="btn-list">
-                <button class="btn btn-blue" onclick="navTo('danaPage')">
-                    <i class="fa-solid fa-wallet"></i> DANA PAYMENT
-                </button>
-                <button class="btn" onclick="navTo('qrisPage')">
-                    <i class="fa-solid fa-qrcode"></i> QRIS PAYMENT
-                </button>
+                <button class="btn btn-blue" onclick="navTo('danaPage')"><i class="fa-solid fa-wallet"></i> <span data-i18n="btn_dana">DANA PAYMENT</span></button>
+                <button class="btn btn-blue" onclick="navTo('qrisPage')"><i class="fa-solid fa-qrcode"></i> <span data-i18n="btn_qris">QRIS PAYMENT</span></button>
             </div>
-
-            <!-- Sosmed Section dengan Frame Kotak -->
-            <div class="sosmed-section">
-                <div class="sosmed-title">CONNECT WITH ME</div>
+            <div class="sosmed-section"><div class="sosmed-title" data-i18n="sosmed_title">CONNECT WITH ME</div>
                 <div class="sosmed-grid">
                     <a href="https://instagram.com/ilhmm.foutrstyc__" class="sosmed-icon" target="_blank"><i class="fa-brands fa-instagram"></i></a>
                     <a href="https://wa.me/628884233919" class="sosmed-icon" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
                     <a href="https://t.me/IsRealHamxyz" class="sosmed-icon" target="_blank"><i class="fa-brands fa-telegram"></i></a>
                     <a href="https://tiktok.com/@hamxyzoffc_" class="sosmed-icon" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
                     <a href="https://youtube.com/@HamxyzOfficial" class="sosmed-icon" target="_blank"><i class="fa-brands fa-youtube"></i></a>
-                    <a href="https://whatsapp.com/channel/0029Vb6ilJs8KMqd8Ctf4O2x" class="sosmed-icon" target="_blank"><i class="fa-brands fa-whatsapp"></i></a> 
-                    <a href="#" class="sosmed-icon"><i class="fa-solid fa-bullhorn"></i></a> 
+                    <a href="https://whatsapp.com/channel/0029Vb6ilJs8KMqd8Ctf4O2x" class="sosmed-icon" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+                    <a href="#" class="sosmed-icon"><i class="fa-solid fa-bullhorn"></i></a>
                     <a href="https://github.com/hamxyztmvn/" class="sosmed-icon" target="_blank"><i class="fa-brands fa-github"></i></a>
                 </div>
             </div>
-
-            <!-- Footer Credits -->
-            <div class="footer-credits">
-                <div class="dev-label">WEB DEVELOPED BY</div>
-                <div class="dev-name">HAMXYZ OFFICIAL</div>
-            </div>
+            <div class="footer-credits"><div class="dev-label" data-i18n="footer_dev_by">WEB DEVELOPED BY</div><div class="dev-name">HAMXYZ OFFICIAL</div></div>
         </div>
 
+        <!-- Halaman DANA -->
         <div id="danaPage" class="page">
-            <button class="btn back-btn-icon" onclick="navTo('home')">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            
             <div class="page-center-content">
-                <div class="pay-card">
-                    <i class="fa-solid fa-fingerprint"></i>
-                    <h3>DANA PAYMENT</h3>
-                    <span class="dana-val">0813 - 3578 - 3149</span>
-                    <p>A/N: ILHAM FA****I</p>
-                </div>
-                <div class="btn-list">
-                    <button class="btn btn-blue" onclick="copyNum()">COPY NUMBER</button>
-                </div>
+                <div class="pay-card"><i class="fa-solid fa-fingerprint"></i><h3 data-i18n="dana_title">DANA PAYMENT</h3><span class="dana-val">0813 - 3578 - 3149</span><p data-i18n="dana_name">A/N: ILHAM FA****I</p></div>
+                <div class="btn-list"><button class="btn btn-blue" onclick="copyNum()"><i class="fa-regular fa-copy"></i> <span data-i18n="copy_number">COPY NUMBER</span></button></div>
             </div>
-
-            <div class="footer-credits">
-                <div class="dev-label">WEB DEVELOPED BY</div>
-                <div class="dev-name">HAMXYZ OFFICIAL</div>
-            </div>
+            <div class="footer-credits"><div class="dev-label" data-i18n="footer_dev_by">WEB DEVELOPED BY</div><div class="dev-name">HAMXYZ OFFICIAL</div></div>
         </div>
 
+        <!-- Halaman QRIS -->
         <div id="qrisPage" class="page">
-            <button class="btn back-btn-icon" onclick="navTo('home')">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            
             <div class="page-center-content">
-                <div class="qris-container" onclick="openQrisPreview()">
-                    <img id="qrisImg" src="assets/qris.png" alt="QRIS">
-                </div>
-                
-                <div class="qris-hint" onclick="openQrisPreview()">
-                    <i class="fa-solid fa-magnifying-glass-plus"></i> Klik Gambar Qris Nya Untuk Memperbesar
-                </div>
-                
-                <div class="btn-list">
-                    <button class="btn btn-blue" onclick="downloadQR()">DOWNLOAD</button>
-                </div>
+                <div class="qris-container" onclick="openQrisPreview()"><img id="qrisImg" src="assets/qris.png" alt="QRIS"></div>
+                <div class="qris-hint" onclick="openQrisPreview()"><i class="fa-solid fa-magnifying-glass-plus"></i> <span data-i18n="qris_hint">Klik Gambar Qris Nya Untuk Memperbesar</span></div>
+                <div class="btn-list"><button class="btn btn-blue" onclick="downloadQR()"><i class="fa-solid fa-download"></i> <span data-i18n="download">DOWNLOAD</span></button></div>
             </div>
-
-            <div class="footer-credits">
-                <div class="dev-label">WEB DEVELOPED BY</div>
-                <div class="dev-name">HAMXYZ OFFICIAL</div>
-            </div>
+            <div class="footer-credits"><div class="dev-label" data-i18n="footer_dev_by">WEB DEVELOPED BY</div><div class="dev-name">HAMXYZ OFFICIAL</div></div>
         </div>
 
+        <!-- Halaman GAMES (pilihan game & play) -->
+        <div id="gamePage" class="page">
+            <div class="game-selection">
+                <div class="game-card" data-game="racer">
+                    <i class="fa-solid fa-car-side"></i>
+                    <h3>ARCADE RACING CAR</h3>
+                    <button class="btn play-center-btn"><i class="fa-solid fa-play"></i> PLAY</button>
+                </div>
+                <div class="game-card" data-game="flappy">
+                    <i class="fa-solid fa-dove flying-bird"></i>
+                    <h3>FLAPPY BIRD</h3>
+                    <button class="btn play-center-btn"><i class="fa-solid fa-play"></i> PLAY</button>
+                </div>
+            </div>
+            <div id="game-container" class="game-container-mini" style="display:none;"></div>
+            <div class="footer-credits"><div class="dev-label">GAME BY</div><div class="dev-name">HAMXYZ OFFICIAL</div></div>
+        </div>
+
+        <!-- Halaman TOOLS (pilihan tools) -->
+        <div id="toolsPage" class="page">
+            <div class="tools-selection">
+                <div class="tools-category">
+                    <h3>Downloader</h3>
+                    <div class="tools-grid">
+                        <div class="tool-card" data-tool="tiktok">
+                            <i class="fa-brands fa-tiktok"></i>
+                            <span>TikTok Downloader</span>
+                        </div>
+                        <div class="tool-card" data-tool="instagram">
+                            <i class="fa-brands fa-instagram"></i>
+                            <span>Instagram Downloader</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tools-category">
+                    <h3>Generator</h3>
+                    <div class="tools-grid">
+                        <div class="tool-card" data-tool="brat">
+                            <i class="fa-solid fa-palette"></i>
+                            <span>Brat Generator</span>
+                        </div>
+                        <div class="tool-card" data-tool="brat-bahlil">
+                            <i class="fa-solid fa-face-smile"></i>
+                            <span>Bahlil Brat Generator</span>
+                        </div>
+                        <div class="tool-card" data-tool="quote-iphone">
+                            <i class="fa-brands fa-apple"></i>
+                            <span>iPhone Quote Generator</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="tool-container" style="display:none;"></div>
+            <div class="footer-credits"><div class="dev-label">TOOLS BY</div><div class="dev-name">API Ikyyxd</div></div>
+        </div>
     </div>
 
     <script src="script.js"></script>
+    <script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.128.0/build/three.module.js" } }</script>
 </body>
-</html>
+                        </html>

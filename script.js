@@ -115,58 +115,108 @@ function startVideoWithSound() {
     const video = document.getElementById('mainVideo');
     if(video) { video.muted = false; video.volume = 1.0; video.play().catch(()=>{}); }
 }
-setTimeout(() => { const l = document.getElementById('initialLoader'); if(l && l.style.display !== 'none') skipInitialLoading(); }, 10000);
 
-// ======================== NAVIGASI DENGAN BACK FISIK HP =========================
-let pageHistory = ['home']; // stack riwayat halaman
-function navTo(pageId) {
+// Cek apakah sudah pernah load sebelumnya (biar loading intro tidak muncul saat refresh)
+if(!sessionStorage.getItem('hasLoaded')) {
+    sessionStorage.setItem('hasLoaded', 'true');
+    setTimeout(() => { const l = document.getElementById('initialLoader'); if(l && l.style.display !== 'none') skipInitialLoading(); }, 10000);
+} else {
+    const loader = document.getElementById('initialLoader');
+    if(loader) {
+        loader.style.display = 'none';
+        startVideoWithSound();
+    }
+}
+
+// ======================== NAVIGASI DENGAN BACK FISIK HP & PERSIST STATE =========================
+let pageHistory = [];
+let isLoadingNav = false;
+const NAV_DELAY = 1500; // 1.5 detik
+
+async function navTo(pageId, extra = null) {
+    if(isLoadingNav) return;
+    isLoadingNav = true;
     const pageLoader = document.getElementById('pageLoader');
     pageLoader.style.display = 'flex';
+    
+    await new Promise(resolve => setTimeout(resolve, NAV_DELAY));
+    
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    setTimeout(() => {
-        document.getElementById(pageId).classList.add('active');
-        pageLoader.style.display = 'none';
-        if(pageId === 'home') startVideoWithSound();
-        // Update history
-        if(pageHistory[pageHistory.length-1] !== pageId) {
-            pageHistory.push(pageId);
-            // Push state ke browser agar back button berfungsi
-            history.pushState({ page: pageId }, '', `#${pageId}`);
-        }
-        // Reset game jika keluar dari gamePage
-        if(pageId !== 'gamePage' && window.gameInitialized) {
-            destroyGame();
-            window.gameInitialized = false;
-        }
-        if(pageId === 'gamePage') {
-            // Tampilkan selection, sembunyikan container game
-            document.querySelector('.game-selection').style.display = 'flex';
-            document.getElementById('game-container').style.display = 'none';
-            document.getElementById('game-container').classList.remove('active');
-            if(window.gameInitialized) destroyGame();
-        }
-        if(pageId === 'toolsPage') {
-            document.querySelector('.tools-selection').style.display = 'flex';
-            document.getElementById('tool-container').style.display = 'none';
-        }
-    }, 150);
+    document.getElementById(pageId).classList.add('active');
+    pageLoader.style.display = 'none';
+    
+    if(pageId === 'home') startVideoWithSound();
+    
+    if(pageHistory.length === 0 || pageHistory[pageHistory.length-1].pageId !== pageId) {
+        const newEntry = { pageId };
+        if(extra) Object.assign(newEntry, extra);
+        pageHistory.push(newEntry);
+        history.pushState({ pageId, extra }, '', `#${pageId}`);
+    }
+    
+    if(pageId !== 'gamePage' && window.gameInitialized) {
+        destroyGame();
+        window.gameInitialized = false;
+    }
+    if(pageId === 'gamePage') {
+        document.querySelector('.game-selection').style.display = 'flex';
+        document.getElementById('game-container').style.display = 'none';
+        document.getElementById('game-container').classList.remove('active');
+        if(window.gameInitialized) destroyGame();
+    }
+    if(pageId === 'toolsPage') {
+        document.querySelector('.tools-selection').style.display = 'flex';
+        document.getElementById('tool-container').style.display = 'none';
+        document.getElementById('tool-container').innerHTML = '';
+        currentTool = null;
+    }
+    isLoadingNav = false;
 }
-// Handle back button fisik
+
 window.addEventListener('popstate', (event) => {
+    if(isLoadingNav) return;
     if(pageHistory.length > 1) {
-        pageHistory.pop(); // hapus halaman saat ini
-        const previousPage = pageHistory[pageHistory.length-1];
-        navTo(previousPage);
+        pageHistory.pop();
+        const prev = pageHistory[pageHistory.length-1];
+        if(prev.pageId === 'toolsPage' && prev.toolName) {
+            const state = event.state;
+            if(state && state.pageId === 'toolsPage' && state.toolName) {
+                loadTool(state.toolName, true);
+            } else {
+                navTo(prev.pageId);
+            }
+        } else {
+            navTo(prev.pageId);
+        }
     } else {
-        // Jika sudah di home, biarkan saja (tidak keluar aplikasi)
-        if(pageHistory[0] !== 'home') {
-            pageHistory = ['home'];
+        if(pageHistory[0]?.pageId !== 'home') {
+            pageHistory = [{ pageId: 'home' }];
             navTo('home');
         }
     }
 });
-// Inisialisasi history pertama kali
-history.replaceState({ page: 'home' }, '', '#home');
+
+function restoreLastPage() {
+    const hash = window.location.hash.slice(1);
+    if(hash && ['home','danaPage','qrisPage','gamePage','toolsPage'].includes(hash)) {
+        pageHistory = [{ pageId: hash }];
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(hash).classList.add('active');
+        if(hash === 'home') startVideoWithSound();
+        if(hash === 'gamePage') {
+            document.querySelector('.game-selection').style.display = 'flex';
+            document.getElementById('game-container').style.display = 'none';
+        }
+        if(hash === 'toolsPage') {
+            document.querySelector('.tools-selection').style.display = 'flex';
+            document.getElementById('tool-container').style.display = 'none';
+        }
+    } else {
+        pageHistory = [{ pageId: 'home' }];
+        history.replaceState({ pageId: 'home' }, '', '#home');
+    }
+}
+restoreLastPage();
 
 // ======================== FUNGSI COPY & DOWNLOAD =========================
 function copyNum() {
@@ -192,11 +242,10 @@ function openQrisPreview() {
 function closeQrisModal() { document.getElementById('qrisModal').classList.remove('active'); }
 document.addEventListener('keydown', (e) => { if(e.key === 'Escape') { closeQrisModal(); closeThemeSheet(); closeLangPopup(); } });
 
-// ======================== GAMES (RACER & FLAPPY BIRD) =========================
+// ======================== GAMES =========================
 window.gameInitialized = false;
 let currentGameType = null;
 let isGameFullscreen = false;
-let gameScriptInjected = false;
 
 function toggleGameFullscreen(enable) {
     const gameContainer = document.getElementById('game-container');
@@ -232,12 +281,10 @@ function loadGame(gameType) {
     window.gameInitialized = true;
     
     if(gameType === 'racer') {
-        // Game ARCADE RACING CAR (Three.js retro racer)
         const script = document.createElement('script');
         script.type = 'module';
         script.textContent = `
             import * as THREE from 'three';
-            // Setup scene
             const containerDiv = document.getElementById('game-container');
             const scene = new THREE.Scene();
             scene.background = new THREE.Color(0x1a2a3a);
@@ -255,14 +302,12 @@ function loadGame(gameType) {
             renderer.setSize(containerDiv.clientWidth, containerDiv.clientHeight);
             containerDiv.appendChild(renderer.domElement);
             
-            // Lighting
             const ambient = new THREE.AmbientLight(0x5a6a8a,0.9);
             scene.add(ambient);
             const mainLight = new THREE.DirectionalLight(0xffeedd,1.3);
             mainLight.position.set(5,8,3);
             scene.add(mainLight);
             
-            // Road
             const canvasTex = document.createElement('canvas');
             canvasTex.width=512; canvasTex.height=512;
             const tx=canvasTex.getContext('2d');
@@ -283,7 +328,6 @@ function loadGame(gameType) {
             roadPlane.position.z = -5;
             scene.add(roadPlane);
             
-            // Player car
             const playerCar = new THREE.Group();
             const bodyGeo = new THREE.BoxGeometry(0.85,0.4,1.6);
             const bodyMat = new THREE.MeshStandardMaterial({ color:0xdd3344 });
@@ -327,7 +371,6 @@ function loadGame(gameType) {
                 spawnAccum=0; gameOverFlag=false; gameActive=true;
                 updateScoreUI(); document.getElementById('game-over-panel').style.display='none';
             }
-            // UI
             const scoreDiv = document.createElement('div');
             scoreDiv.id = 'game-score';
             scoreDiv.style.position='absolute'; scoreDiv.style.top='10px'; scoreDiv.style.right='10px';
@@ -345,7 +388,6 @@ function loadGame(gameType) {
             containerDiv.appendChild(gameOverDiv);
             document.getElementById('restart-game-btn')?.addEventListener('click', resetGame);
             
-            // Control
             let isDragging = false;
             function handleMove(clientX) { if(!gameActive) return; const rect = containerDiv.getBoundingClientRect(); const t = (clientX - rect.left) / rect.width; playerTargetX = -3.2 + (t * 6.4); }
             containerDiv.addEventListener('mousemove', (e) => { if(isDragging) handleMove(e.clientX); });
@@ -379,12 +421,10 @@ function loadGame(gameType) {
                 requestAnimationFrame(animate);
             }
             animate();
-            // Fullscreen otomatis
             window.parent.toggleGameFullscreenExternal(true);
         `;
         container.appendChild(script);
     } else if(gameType === 'flappy') {
-        // Game FLAPPY BIRD sederhana dengan canvas 2D
         const canvas = document.createElement('canvas');
         canvas.width = 800;
         canvas.height = 600;
@@ -407,10 +447,8 @@ function loadGame(gameType) {
         }
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // background
             ctx.fillStyle = '#87CEEB';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            // bird (dove terbang)
             ctx.fillStyle = '#FFD700';
             ctx.beginPath();
             ctx.arc(100, bird.y, bird.radius, 0, Math.PI*2);
@@ -422,13 +460,11 @@ function loadGame(gameType) {
             ctx.lineTo(100 + bird.radius + 8, bird.y);
             ctx.lineTo(100 + bird.radius + 12, bird.y + 5);
             ctx.fill();
-            // pipes
             ctx.fillStyle = '#228B22';
             pipes.forEach(pipe => {
                 ctx.fillRect(pipe.x, 0, pipeWidth, pipe.topHeight);
                 ctx.fillRect(pipe.x, pipe.bottomY, pipeWidth, canvas.height - pipe.bottomY);
             });
-            // score
             ctx.fillStyle = 'white';
             ctx.font = 'bold 30px monospace';
             ctx.fillText(score, canvas.width/2, 50);
@@ -450,7 +486,6 @@ function loadGame(gameType) {
                 p.x -= 3;
                 if(p.x + pipeWidth < 0) { pipes.splice(i,1); i--; continue; }
                 if(!p.passed && p.x + pipeWidth < 100) { p.passed = true; score++; }
-                // collision
                 if(100 + bird.radius > p.x && 100 - bird.radius < p.x + pipeWidth) {
                     if(bird.y - bird.radius < p.topHeight || bird.y + bird.radius > p.bottomY) gameActive = false;
                 }
@@ -482,31 +517,50 @@ function loadGame(gameType) {
         canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleTap(e); });
         spawnPipe();
         gameLoop();
-        // fullscreen
         window.parent.toggleGameFullscreenExternal(true);
     }
 }
 
-// Event untuk tombol PLAY di game selection (menggunakan class .play-center-btn)
 document.querySelectorAll('.play-center-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const gameCard = btn.closest('.game-card');
         const gameType = gameCard.getAttribute('data-game');
         loadGame(gameType);
-        // Masuk fullscreen setelah game dimuat
-        setTimeout(() => {
-            toggleGameFullscreen(true);
-        }, 100);
+        setTimeout(() => { toggleGameFullscreen(true); }, 100);
     });
 });
 
-// ======================== TOOLS (Downloader & Generator) =========================
-let currentTool = null;
-let toolData = null;
+window.toggleGameFullscreenExternal = (enable) => { toggleGameFullscreen(enable); };
 
-function loadTool(toolName) {
-    if(currentTool === toolName) return;
+// ======================== TOOLS =========================
+let currentTool = null;
+
+function showLoadingSpinner(container) {
+    container.innerHTML = `<div class="loading-spinner"><div class="spinner"></div><p>Loading...</p></div>`;
+}
+
+// Fungsi untuk mengunduh file dari URL (memastikan download langsung)
+async function downloadFile(url, filename) {
+    try {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+    } catch(e) {
+        console.error('Download gagal:', e);
+        alert('Gagal mengunduh file. Coba lagi nanti.');
+    }
+}
+
+function loadTool(toolName, noPushState = false) {
+    if(currentTool === toolName && document.querySelector('#tool-container .tool-form')) return;
     currentTool = toolName;
     const container = document.getElementById('tool-container');
     container.style.display = 'block';
@@ -516,153 +570,188 @@ function loadTool(toolName) {
     let html = '';
     switch(toolName) {
         case 'tiktok':
-            html = `
-                <div class="tool-form">
-                    <input type="text" id="tiktok-url" placeholder="Masukkan URL TikTok (contoh: https://tiktok.com/@user/video/123456789)" />
-                    <button id="submit-tiktok">Download TikTok</button>
-                </div>
-                <div id="tiktok-result" class="tool-result"></div>
-            `;
+            html = `<div class="tool-form"><input type="text" id="tiktok-url" placeholder="Masukkan URL TikTok"><button id="submit-tiktok">Download TikTok</button></div><div id="tiktok-result" class="tool-result"></div>`;
             break;
         case 'instagram':
-            html = `
-                <div class="tool-form">
-                    <input type="text" id="instagram-url" placeholder="Masukkan URL Instagram (contoh: https://instagram.com/p/xxxxx)" />
-                    <button id="submit-instagram">Download Instagram</button>
-                </div>
-                <div id="instagram-result" class="tool-result"></div>
-            `;
+            html = `<div class="tool-form"><input type="text" id="instagram-url" placeholder="Masukkan URL Instagram"><button id="submit-instagram">Download Instagram</button></div><div id="instagram-result" class="tool-result"></div>`;
             break;
         case 'brat':
-            html = `
-                <div class="tool-form">
-                    <textarea id="brat-text" rows="3" placeholder="Masukkan teks untuk generator Brat"></textarea>
-                    <button id="submit-brat">Generate Brat</button>
-                </div>
-                <div id="brat-result" class="tool-result"></div>
-            `;
+            html = `<div class="tool-form"><textarea id="brat-text" rows="3" placeholder="Masukkan teks untuk Brat"></textarea><button id="submit-brat">Generate Brat</button></div><div id="brat-result" class="tool-result"></div>`;
             break;
         case 'brat-bahlil':
-            html = `
-                <div class="tool-form">
-                    <textarea id="bahlil-text" rows="3" placeholder="Masukkan teks untuk generator Bahlil Brat"></textarea>
-                    <button id="submit-bahlil">Generate Bahlil Brat</button>
-                </div>
-                <div id="bahlil-result" class="tool-result"></div>
-            `;
+            html = `<div class="tool-form"><textarea id="bahlil-text" rows="3" placeholder="Masukkan teks untuk Bahlil Brat"></textarea><button id="submit-bahlil">Generate Bahlil Brat</button></div><div id="bahlil-result" class="tool-result"></div>`;
             break;
         case 'quote-iphone':
-            html = `
-                <div class="tool-form">
-                    <textarea id="quote-text" rows="3" placeholder="Masukkan teks untuk Quote iPhone"></textarea>
-                    <button id="submit-quote">Generate Quote iPhone</button>
-                </div>
-                <div id="quote-result" class="tool-result"></div>
-            `;
+            html = `<div class="tool-form"><textarea id="quote-text" rows="3" placeholder="Masukkan teks untuk Quote iPhone"></textarea><button id="submit-quote">Generate Quote iPhone</button></div><div id="quote-result" class="tool-result"></div>`;
             break;
     }
     container.innerHTML = html;
     
-    // Add event listeners
+    if(!noPushState) {
+        pageHistory.push({ pageId: 'toolsPage', toolName });
+        history.pushState({ pageId: 'toolsPage', toolName }, '', `#toolsPage?tool=${toolName}`);
+    }
+    
+    // TikTok
     if(toolName === 'tiktok') {
-        document.getElementById('submit-tiktok').addEventListener('click', () => {
+        document.getElementById('submit-tiktok').addEventListener('click', async () => {
             const url = document.getElementById('tiktok-url').value;
             if(!url) return alert('Masukkan URL TikTok!');
-            fetch(`https://api.ikyyxd.my.id/download/tiktokkv2?url=${encodeURIComponent(url)}`)
-                .then(res => res.json())
-                .then(data => {
-                    const resultDiv = document.getElementById('tiktok-result');
-                    if(data.result && data.result.video) {
-                        resultDiv.innerHTML = `<video controls src="${data.result.video}" style="max-width:100%; border-radius:16px;"></video>`;
-                    } else {
-                        resultDiv.innerHTML = `<p>Gagal mengambil data. Pastikan URL valid.</p>`;
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    document.getElementById('tiktok-result').innerHTML = `<p>Error: ${err.message}</p>`;
-                });
+            const resultDiv = document.getElementById('tiktok-result');
+            showLoadingSpinner(resultDiv);
+            try {
+                const res = await fetch(`https://api.ikyyxd.my.id/download/tiktokkv2?url=${encodeURIComponent(url)}`);
+                const data = await res.json();
+                if(data.result && data.result.video) {
+                    const videoUrl = data.result.video;
+                    resultDiv.innerHTML = `
+                        <div>
+                            <video controls style="max-width:100%; border-radius:16px;" src="${videoUrl}"></video>
+                            <br>
+                            <button class="btn" onclick="downloadFile('${videoUrl}', 'tiktok_video.mp4')">Download Video</button>
+                        </div>
+                    `;
+                } else if(data.result && data.result.images) {
+                    let htmlContent = '';
+                    data.result.images.forEach((img, idx) => {
+                        htmlContent += `
+                            <div style="margin-bottom:15px;">
+                                <img src="${img}" style="max-width:100%; border-radius:16px;">
+                                <br>
+                                <button class="btn" onclick="downloadFile('${img}', 'tiktok_image_${idx+1}.jpg')">Download Gambar</button>
+                            </div>
+                        `;
+                    });
+                    resultDiv.innerHTML = htmlContent;
+                } else {
+                    resultDiv.innerHTML = '<p>Gagal mengambil data. Cek URL.</p>';
+                }
+            } catch(e) { resultDiv.innerHTML = `<p>Error: ${e.message}</p>`; }
         });
-    } else if(toolName === 'instagram') {
-        document.getElementById('submit-instagram').addEventListener('click', () => {
-            const url = document.getElementById('instagram-url').value;
-            if(!url) return alert('Masukkan URL Instagram!');
-            fetch(`https://api.ikyyxd.my.id/download/igv2?url=${encodeURIComponent(url)}`)
-                .then(res => res.json())
-                .then(data => {
-                    const resultDiv = document.getElementById('instagram-result');
-                    if(data.result && data.result.url) {
-                        resultDiv.innerHTML = `<a href="${data.result.url}" target="_blank">Download Instagram</a>`;
+    } 
+// Instagram Downloader (menggunakan endpoint igv2)
+else if(toolName === 'instagram') {
+    document.getElementById('submit-instagram').addEventListener('click', async () => {
+        const url = document.getElementById('instagram-url').value;
+        if(!url) return alert('Masukkan URL Instagram!');
+        const resultDiv = document.getElementById('instagram-result');
+        showLoadingSpinner(resultDiv);
+        try {
+            const response = await fetch(`https://api.ikyyxd.my.id/download/igv2?url=${encodeURIComponent(url)}`);
+            const data = await response.json();
+            console.log('Instagram API response:', data);
+
+            if(data.status === true && data.result && Array.isArray(data.result) && data.result.length > 0) {
+                let htmlContent = '';
+                data.result.forEach((item, idx) => {
+                    const mediaUrl = item.url;
+                    const size = item.size || 'Unknown size';
+                    const isVideo = mediaUrl.match(/\.(mp4|webm|mov)(\?|$)/i);
+                    if(isVideo) {
+                        htmlContent += `
+                            <div style="margin-bottom:20px;">
+                                <video controls style="max-width:100%; border-radius:16px;" src="${mediaUrl}"></video>
+                                <br>
+                                <small>Size: ${size}</small>
+                                <br>
+                                <button class="btn" onclick="downloadFile('${mediaUrl}', 'instagram_video_${idx+1}.mp4')">Download Video</button>
+                            </div>
+                        `;
                     } else {
-                        resultDiv.innerHTML = `<p>Gagal mengambil data. Pastikan URL valid.</p>`;
+                        htmlContent += `
+                            <div style="margin-bottom:20px;">
+                                <img src="${mediaUrl}" style="max-width:100%; border-radius:16px;">
+                                <br>
+                                <small>Size: ${size}</small>
+                                <br>
+                                <button class="btn" onclick="downloadFile('${mediaUrl}', 'instagram_image_${idx+1}.jpg')">Download Gambar</button>
+                            </div>
+                        `;
                     }
-                })
-                .catch(err => {
-                    console.error(err);
-                    document.getElementById('instagram-result').innerHTML = `<p>Error: ${err.message}</p>`;
                 });
-        });
-    } else if(toolName === 'brat') {
-        document.getElementById('submit-brat').addEventListener('click', () => {
+                resultDiv.innerHTML = htmlContent;
+            } else {
+                let errorMsg = data.message || data.result?.message || 'Pastikan URL valid dan akun publik.';
+                resultDiv.innerHTML = `<p>Gagal mengambil data. ${errorMsg}</p>`;
+            }
+        } catch(e) {
+            console.error('Instagram download error:', e);
+            resultDiv.innerHTML = `<p>Error: ${e.message}</p>`;
+        }
+    });
+}
+    // Brat Generator
+    else if(toolName === 'brat') {
+        document.getElementById('submit-brat').addEventListener('click', async () => {
             const text = document.getElementById('brat-text').value;
             if(!text) return alert('Masukkan teks!');
-            fetch(`https://api.ikyyxd.my.id/canvas/bratv1?apikey=kyzz&text=${encodeURIComponent(text)}`)
-                .then(res => res.json())
-                .then(data => {
-                    const resultDiv = document.getElementById('brat-result');
-                    if(data.result && data.result.url) {
-                        resultDiv.innerHTML = `<img src="${data.result.url}" alt="Brat Generator" style="max-width:100%; border-radius:16px;">`;
-                    } else {
-                        resultDiv.innerHTML = `<p>Gagal generate. Coba lagi.</p>`;
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    document.getElementById('brat-result').innerHTML = `<p>Error: ${err.message}</p>`;
-                });
+            const resultDiv = document.getElementById('brat-result');
+            showLoadingSpinner(resultDiv);
+            try {
+                const res = await fetch(`https://api.ikyyxd.my.id/canvas/bratv1?apikey=kyzz&text=${encodeURIComponent(text)}`);
+                if(res.ok) {
+                    const blob = await res.blob();
+                    const url = URL.createObjectURL(blob);
+                    resultDiv.innerHTML = `
+                        <img src="${url}" style="max-width:100%; border-radius:16px;">
+                        <br>
+                        <button class="btn" onclick="downloadFile('${url}', 'brat.png')">Download Gambar</button>
+                    `;
+                } else {
+                    resultDiv.innerHTML = '<p>Gagal generate.</p>';
+                }
+            } catch(e) { resultDiv.innerHTML = `<p>Error: ${e.message}</p>`; }
         });
-    } else if(toolName === 'brat-bahlil') {
-        document.getElementById('submit-bahlil').addEventListener('click', () => {
+    }
+    // Bahlil Brat Generator
+    else if(toolName === 'brat-bahlil') {
+        document.getElementById('submit-bahlil').addEventListener('click', async () => {
             const text = document.getElementById('bahlil-text').value;
             if(!text) return alert('Masukkan teks!');
-            fetch(`https://api.ikyyxd.my.id/maker/bratbahlil?text=${encodeURIComponent(text)}`)
-                .then(res => res.json())
-                .then(data => {
-                    const resultDiv = document.getElementById('bahlil-result');
-                    if(data.result && data.result.url) {
-                        resultDiv.innerHTML = `<img src="${data.result.url}" alt="Bahlil Brat Generator" style="max-width:100%; border-radius:16px;">`;
-                    } else {
-                        resultDiv.innerHTML = `<p>Gagal generate. Coba lagi.</p>`;
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    document.getElementById('bahlil-result').innerHTML = `<p>Error: ${err.message}</p>`;
-                });
+            const resultDiv = document.getElementById('bahlil-result');
+            showLoadingSpinner(resultDiv);
+            try {
+                const res = await fetch(`https://api.ikyyxd.my.id/maker/bratbahlil?text=${encodeURIComponent(text)}`);
+                if(res.ok) {
+                    const blob = await res.blob();
+                    const url = URL.createObjectURL(blob);
+                    resultDiv.innerHTML = `
+                        <img src="${url}" style="max-width:100%; border-radius:16px;">
+                        <br>
+                        <button class="btn" onclick="downloadFile('${url}', 'bahlil_brat.png')">Download Gambar</button>
+                    `;
+                } else {
+                    resultDiv.innerHTML = '<p>Gagal generate.</p>';
+                }
+            } catch(e) { resultDiv.innerHTML = `<p>Error: ${e.message}</p>`; }
         });
-    } else if(toolName === 'quote-iphone') {
-        document.getElementById('submit-quote').addEventListener('click', () => {
+    }
+    // iPhone Quote Generator
+    else if(toolName === 'quote-iphone') {
+        document.getElementById('submit-quote').addEventListener('click', async () => {
             const text = document.getElementById('quote-text').value;
             if(!text) return alert('Masukkan teks!');
-            fetch(`https://api.ikyyxd.my.id/canvas/iphone-quoted?apikey=kyzz&messageText=${encodeURIComponent(text)}`)
-                .then(res => res.json())
-                .then(data => {
-                    const resultDiv = document.getElementById('quote-result');
-                    if(data.result && data.result.url) {
-                        resultDiv.innerHTML = `<img src="${data.result.url}" alt="iPhone Quote" style="max-width:100%; border-radius:16px;">`;
-                    } else {
-                        resultDiv.innerHTML = `<p>Gagal generate. Coba lagi.</p>`;
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    document.getElementById('quote-result').innerHTML = `<p>Error: ${err.message}</p>`;
-                });
+            const resultDiv = document.getElementById('quote-result');
+            showLoadingSpinner(resultDiv);
+            try {
+                const res = await fetch(`https://api.ikyyxd.my.id/canvas/iphone-quoted?apikey=kyzz&messageText=${encodeURIComponent(text)}`);
+                if(res.ok) {
+                    const blob = await res.blob();
+                    const url = URL.createObjectURL(blob);
+                    resultDiv.innerHTML = `
+                        <img src="${url}" style="max-width:100%; border-radius:16px;">
+                        <br>
+                        <button class="btn" onclick="downloadFile('${url}', 'quote_iphone.png')">Download Gambar</button>
+                    `;
+                } else {
+                    resultDiv.innerHTML = '<p>Gagal generate.</p>';
+                }
+            } catch(e) { resultDiv.innerHTML = `<p>Error: ${e.message}</p>`; }
         });
     }
 }
 
-// Event listener untuk tools card
+// Tools card click
 document.querySelectorAll('.tool-card').forEach(card => {
     card.addEventListener('click', () => {
         const tool = card.getAttribute('data-tool');
@@ -670,5 +759,14 @@ document.querySelectorAll('.tool-card').forEach(card => {
     });
 });
 
-// Expose fungsi global untuk dipanggil dari game script
-window.toggleGameFullscreenExternal = (enable) => { toggleGameFullscreen(enable); };
+// Tambahkan CSS spinner dan global function downloadFile
+const styleSpinner = document.createElement('style');
+styleSpinner.textContent = `
+.loading-spinner { text-align: center; padding: 20px; }
+.spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.2); border-top: 4px solid var(--theme-primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+`;
+document.head.appendChild(styleSpinner);
+
+// Expose downloadFile ke global scope agar bisa dipanggil dari onclick
+window.downloadFile = downloadFile;
